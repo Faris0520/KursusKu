@@ -16,8 +16,8 @@ class EnrollmentController extends Controller
             return back() -> with('error', 'Kamu sudah terdaftar di kursus ini.');
         }
 
-        if ($user -> isFree($course)) {
-            return back() -> with('error', 'Kursus ini berbayar.');
+        if (!$course->isFree()) {
+            return back()->with('error', 'Kursus ini berbayar.');
         }
 
         Enrollment::create([

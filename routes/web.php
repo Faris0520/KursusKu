@@ -63,5 +63,15 @@ Route::middleware(['auth', 'role:mentor', 'verified_mentor'])->prefix('mentor')-
 
 // Siswa routes
 Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
-    // Dashboard
+    Route::get('/dashboard', [Siswa\DashboardController::class, 'index'])->name('dashboard');
+
+    // Learning
+    Route::get('/courses/{course:slug}/learn/{lesson?}', [Siswa\LearningController::class, 'show'])->name('learn');
+
+    // Quiz
+    Route::get('/courses/{course}/quizzes/{quiz}', [Siswa\QuizController::class, 'show'])->name('quiz.show');
+    Route::post('/courses/{course}/quizzes/{quiz}', [Siswa\QuizController::class, 'submit'])->name('quiz.submit');
+
+    // Review
+    Route::post('/courses/{course}/review', [Siswa\ReviewController::class, 'store'])->name('review.store');
 });
