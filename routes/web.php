@@ -24,7 +24,20 @@ require __DIR__.'/auth.php';
 
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
+    Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
+
+    // Users
+    Route::get('/users', [Admin\UserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/role', [Admin\UserController::class, 'updateRole'])->name('users.updateRole');
+    Route::delete('/users/{user}', [Admin\UserController::class, 'destroy'])->name('users.destroy');
+
+    // Mentor Verification
+    Route::get('/mentors', [Admin\MentorVerificationController::class, 'index'])->name('mentors.index');
+    Route::patch('/mentors/{user}/approve', [Admin\MentorVerificationController::class, 'approve'])->name('mentors.approve');
+    Route::patch('/mentors/{user}/reject', [Admin\MentorVerificationController::class, 'reject'])->name('mentors.reject');
+
+    // Categories
+    Route::resource('/categories', Admin\CategoryController::class);
 });
 
 // Mentor routes
