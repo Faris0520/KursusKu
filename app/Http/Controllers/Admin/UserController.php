@@ -24,6 +24,7 @@ class UserController extends Controller
     {
         $request->validate(['role' => 'required|in:siswa,mentor,admin']);
         $user->update(['role' => $request->role]);
+        $user->syncRoles([$request->role]); // Sinkron dengan Spatie Permission
 
         return back()->with('success', "Role{$user->name} diubah menjadi{$request->role}.");
     }

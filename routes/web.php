@@ -8,7 +8,11 @@ use App\Http\Controllers\Siswa;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
+
+Route::get('/courses', function () {
+    return view('welcome');
+})->name('courses.index');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

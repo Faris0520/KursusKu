@@ -21,6 +21,8 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('manage-categories'); // Spatie
+    
         $request->validate(['name' => 'required|string|max:255|unique:categories']);
         Category::create(['name' => $request->name]);
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan.');
@@ -33,6 +35,8 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
+        $this->authorize('manage-categories'); // Spatie
+
         $request->validate(['name' => 'required|string|max:255|unique:categories,name,' . $category->id]);
         $category->update(['name' => $request->name]);
         return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diupdate.');
@@ -40,6 +44,8 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        $this->authorize('manage-categories'); // Spatie
+
         $category->delete();
         return back()->with('success', 'Kategori berhasil dihapus.');
     }

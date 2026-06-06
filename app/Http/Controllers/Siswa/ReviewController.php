@@ -11,6 +11,8 @@ class ReviewController extends Controller
 {
     public function store(Request $request, Course $course)
     {
+        $this->authorize('write-review'); // Spatie
+        
         $user = auth()->user();
 
         if (!$user->isEnrolled($course)) {

@@ -19,13 +19,18 @@ class MentorVerificationController extends Controller
 
     public function approve(User $user)
     {
+        $this->authorize('verify-mentor'); // Spatie
+
         $user->update(['is_verified' => true]);
         return back()->with('success', "Mentor{$user->name} berhasil diverifikasi.");
     }
 
     public function reject(User $user)
     {
+        $this->authorize('verify-mentor'); // Spatie
+
         $user->update(['role' => 'siswa', 'is_verified' => false]);
+        $user->syncRoles(['siswa']); // Sinkron dengan Spatie Permission
         return back()->with('success', "Mentor{$user->name} ditolak dan dikembalikan ke siswa.");
     }
 }

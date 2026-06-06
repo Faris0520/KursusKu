@@ -37,10 +37,12 @@
                                     <a href="{{ route('mentor.quizzes.index', $course) }}" class="text-indigo-600 hover:underline">Quiz</a>
                                     <a href="{{ route('mentor.courses.students', $course) }}" class="text-indigo-600 hover:underline">Siswa</a>
                                     <a href="{{ route('mentor.courses.reviews', $course) }}" class="text-indigo-600 hover:underline">Review</a>
+                                    @can('delete-own-course')
                                     <form method="POST" action="{{ route('mentor.courses.destroy', $course) }}" onsubmit="return confirm('Yakin hapus?')">
                                         @csrf @method('DELETE')
                                         <button class="text-red-600 hover:underline">Hapus</button>
                                     </form>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

@@ -26,7 +26,9 @@
 
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold">Kursus Saya</h3>
+                @can('create-course')
                 <a href="{{ route('mentor.courses.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm">Buat Kursus</a>
+                @endcan
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

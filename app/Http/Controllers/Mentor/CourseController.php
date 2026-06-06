@@ -28,7 +28,9 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
-         $validated = $request->validate([
+        $this->authorize('create-course'); // Spatie
+
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string',
@@ -56,6 +58,7 @@ class CourseController extends Controller
 
     public function update(Request $request, Course $course)
     {
+        $this->authorize('edit-own-course'); // Spatie
         $this->authorizeMentor($course);
 
         $validated = $request->validate([
@@ -81,7 +84,9 @@ class CourseController extends Controller
 
     public function destroy(Course $course)
     {
+        $this->authorize('delete-own-course'); // Spatie
         $this->authorizeMentor($course);
+        
         if ($course->thumbnail) {
             Storage::disk('public')->delete($course->thumbnail);
         }
