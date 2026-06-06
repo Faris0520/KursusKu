@@ -70,4 +70,39 @@ class User extends Authenticatable
     {
         return $this->is_verified;
     }
+
+    public function courses()
+{
+    return $this->hasMany(Course::class, 'mentor_id');
+}
+
+public function enrollments()
+{
+    return $this->hasMany(Enrollment::class);
+}
+
+public function enrolledCourses()
+{
+    return $this->belongsToMany(Course::class, 'enrollments')->withPivot('enrolled_at');
+}
+
+public function transactions()
+{
+    return $this->hasMany(Transaction::class);
+}
+
+public function quizAttempts()
+{
+    return $this->hasMany(QuizAttempt::class);
+}
+
+public function reviews()
+{
+    return $this->hasMany(Review::class);
+}
+
+public function isEnrolled(Course $course): bool
+{
+    return $this->enrollments()->where('course_id', $course->id)->exists();
+}
 }

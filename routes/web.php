@@ -24,7 +24,20 @@ require __DIR__.'/auth.php';
 
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
+    Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
+
+    // Users
+    Route::get('/users', [Admin\UserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/role', [Admin\UserController::class, 'updateRole'])->name('users.updateRole');
+    Route::delete('/users/{user}', [Admin\UserController::class, 'destroy'])->name('users.destroy');
+
+    // Mentor Verification
+    Route::get('/mentors', [Admin\MentorVerificationController::class, 'index'])->name('mentors.index');
+    Route::patch('/mentors/{user}/approve', [Admin\MentorVerificationController::class, 'approve'])->name('mentors.approve');
+    Route::patch('/mentors/{user}/reject', [Admin\MentorVerificationController::class, 'reject'])->name('mentors.reject');
+
+    // Categories
+    Route::resource('/categories', Admin\CategoryController::class);
 });
 
 // Mentor routes
@@ -63,5 +76,15 @@ Route::middleware(['auth', 'role:mentor', 'verified_mentor'])->prefix('mentor')-
 
 // Siswa routes
 Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
-    // Dashboard
+    Route::get('/dashboard', [Siswa\DashboardController::class, 'index'])->name('dashboard');
+
+    // Learning
+    Route::get('/courses/{course:slug}/learn/{lesson?}', [Siswa\LearningController::class, 'show'])->name('learn');
+
+    // Quiz
+    Route::get('/courses/{course}/quizzes/{quiz}', [Siswa\QuizController::class, 'show'])->name('quiz.show');
+    Route::post('/courses/{course}/quizzes/{quiz}', [Siswa\QuizController::class, 'submit'])->name('quiz.submit');
+
+    // Review
+    Route::post('/courses/{course}/review', [Siswa\ReviewController::class, 'store'])->name('review.store');
 });
