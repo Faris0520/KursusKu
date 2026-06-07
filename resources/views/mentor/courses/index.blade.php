@@ -1,56 +1,36 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Kursus Saya</h2>
-            <a href="{{ route('mentor.courses.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm">Buat Kursus Baru</a>
-        </div>
-    </x-slot>
-
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Judul</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Materi</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Siswa</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @foreach($courses as $course)
-                        <tr>
-                            <td class="px-6 py-4 font-medium">{{ $course->title }}</td>
-                            <td class="px-6 py-4">
-                                <span class="px-2 py-1 text-xs rounded-full {{ $course->status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                    {{ ucfirst($course->status) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">{{ $course->lessons_count }}</td>
-                            <td class="px-6 py-4">{{ $course->enrollments_count }}</td>
-                            <td class="px-6 py-4">
-                                <div class="flex flex-wrap gap-2 text-sm">
-                                    <a href="{{ route('mentor.courses.edit', $course) }}" class="text-indigo-600 hover:underline">Edit</a>
-                                    <a href="{{ route('mentor.lessons.index', $course) }}" class="text-indigo-600 hover:underline">Materi</a>
-                                    <a href="{{ route('mentor.quizzes.index', $course) }}" class="text-indigo-600 hover:underline">Quiz</a>
-                                    <a href="{{ route('mentor.courses.students', $course) }}" class="text-indigo-600 hover:underline">Siswa</a>
-                                    <a href="{{ route('mentor.courses.reviews', $course) }}" class="text-indigo-600 hover:underline">Review</a>
-                                    @can('delete-own-course')
-                                    <form method="POST" action="{{ route('mentor.courses.destroy', $course) }}" onsubmit="return confirm('Yakin hapus?')">
-                                        @csrf @method('DELETE')
-                                        <button class="text-red-600 hover:underline">Hapus</button>
-                                    </form>
-                                    @endcan
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-2xl font-bold mb-6">Semua Kursus</h1>
+
+            <!-- Filter -->
+            <form method="GET" class="mb-8 flex flex-wrap gap-4">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kursus..."
+                       class="rounded-md border-gray-300 flex-1 min-w-[200px]">
+                <select name="category" class="rounded-md border-gray-300">
+                    <option value="">Semua Kategori</option>
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}"@selected(request('category')==$cat->id)>{{ $cat->name }}</option>
+                    @endforeach
+                </select>
+                <select name="price" class="rounded-md border-gray-300">
+                    <option value="">Semua Harga</option>
+                    <option value="free"@selected(request('price')=='free')>Gratis</option>
+                    <option value="paid"@selected(request('price')=='paid')>Berbayar</option>
+                </select>
+                <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md">Cari</button>
+            </form>
+
+            <!-- Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                @forelse($courses as $course)
+                    <x-course-card :course="$course"/>
+                @empty
+                    <p class="col-span-4 text-center text-gray-500 py-12">Tidak ada kursus ditemukan.</p>
+                @endforelse
             </div>
-            <div class="mt-4">{{ $courses->links() }}</div>
+
+            <div class="mt-8">{{ $courses->links() }}</div>
         </div>
     </div>
 </x-app-layout>

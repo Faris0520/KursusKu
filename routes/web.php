@@ -5,14 +5,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Mentor;
 use App\Http\Controllers\Siswa;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CourseController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
-Route::get('/courses', function () {
-    return view('welcome');
-})->name('courses.index');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
