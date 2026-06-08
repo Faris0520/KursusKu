@@ -7,6 +7,9 @@ use App\Http\Controllers\Mentor;
 use App\Http\Controllers\Siswa;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\TransactionController;
+
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
@@ -20,6 +23,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/courses/{course}/enroll-free', [EnrollmentController::class, 'enrollFree'])->name('enrollment.free');
+    Route::post('/courses/{course}/pay', [TransactionController::class, 'create'])->name('transaction.create');
+    Route::get('/transactions', [TransactionController::class, 'history'])->name('transactions.history');
 });
 
 require __DIR__.'/auth.php';
@@ -48,6 +54,7 @@ Route::middleware(['auth', 'role:mentor', 'verified_mentor'])->prefix('mentor')-
 
     // Courses
     Route::resource('/courses', Mentor\CourseController::class)->except('show');
+    Route::get('/courses/{course}', [Mentor\CourseController::class, 'show'])->name('courses.show');
     Route::get('/courses/{course}/students', [Mentor\CourseController::class, 'students'])->name('courses.students');
     Route::get('/courses/{course}/reviews', [Mentor\CourseController::class, 'reviews'])->name('courses.reviews');
 
@@ -90,3 +97,6 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     // Review
     Route::post('/courses/{course}/review', [Siswa\ReviewController::class, 'store'])->name('review.store');
 });
+
+// Midtrans callback (no auth, no CSRF)
+Route::post('/api/midtrans/callback', [TransactionController::class, 'callback'])->name('midtrans.callback');
