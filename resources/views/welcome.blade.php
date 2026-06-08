@@ -100,43 +100,38 @@
     <section class="featured" id="featured">
         <div class="section">
             <h2 class="section-title">Featured classes</h2>
-            @php
-            $featured = [
-                ['title' => 'Adobe Illustrator CC - Advanced Training Course',          'price' => '$12.99', 'was' => '$45.00', 'rating' => 4.8, 'cat' => 'Design',       'bg' => 'e0e7ff', 'fg' => '4f46e5'],
-                ['title' => 'Master Course: English Grammar, English Speaking',          'price' => '$15.99', 'was' => '$60.00', 'rating' => 4.7, 'cat' => 'Language',     'bg' => 'fef9c3', 'fg' => 'ca8a04'],
-                ['title' => 'Microsoft Office Essential Skills Exchange Online',          'price' => '$14.99', 'was' => '$55.00', 'rating' => 4.8, 'cat' => 'Office',       'bg' => 'dcfce7', 'fg' => '16a34a'],
-                ['title' => 'The Complete 2024 Web Development Bootcamp',                'price' => '$13.99', 'was' => '$50.00', 'rating' => 4.9, 'cat' => 'Development',  'bg' => 'dbeafe', 'fg' => '1d4ed8'],
-                ['title' => 'Adobe Premiere Pro Masterclass: Video Editing',             'price' => '$13.99', 'was' => '$45.00', 'rating' => 4.8, 'cat' => 'Design',       'bg' => 'fce7f3', 'fg' => 'be185d'],
-                ['title' => 'Photography Masterclass: A Complete Guide to Photography', 'price' => '$18.99', 'was' => '$70.00', 'rating' => 4.9, 'cat' => 'Photography',  'bg' => 'fff7ed', 'fg' => 'c2410c'],
-                ['title' => 'Complete WordPress Developer Course 2024',                  'price' => '$18.99', 'was' => '$65.00', 'rating' => 4.8, 'cat' => 'Development',  'bg' => 'ede9fe', 'fg' => '6d28d9'],
-                ['title' => 'The Corporate Finance Course',                              'price' => '$17.99', 'was' => '$40.00', 'rating' => 4.8, 'cat' => 'Finance',      'bg' => 'd1fae5', 'fg' => '047857'],
-            ];
-            @endphp
             <div class="courses-grid">
-                @foreach($featured as $c)
-                <div class="course-card">
+                @forelse($popularCourses as $c)
+                @php $rating = round($c->averageRating(), 1); @endphp
+                <a href="{{ route('courses.show', $c->slug) }}" class="course-card">
                     <div class="course-thumb">
-                        <img src="https://placehold.co/280x148/{{ $c['bg'] }}/{{ $c['fg'] }}?text={{ urlencode($c['cat']) }}" alt="{{ $c['title'] }}">
-                        <span class="badge-level">Beginner</span>
+                        @if($c->thumbnail)
+                            <img src="{{ asset('storage/' . $c->thumbnail) }}" alt="{{ $c->title }}">
+                        @else
+                            <img src="https://placehold.co/280x148/e0e7ff/4f46e5?text={{ urlencode($c->category->name ?? 'Course') }}" alt="{{ $c->title }}">
+                        @endif
+                        <span class="badge-level">{{ $c->category->name ?? 'Course' }}</span>
                     </div>
                     <div class="course-body">
-                        <div class="course-title">{{ $c['title'] }}</div>
-                        <div class="course-author">By <span>Onecontributor</span> · {{ $c['cat'] }}</div>
+                        <div class="course-title">{{ $c->title }}</div>
+                        <div class="course-author">By <span>{{ $c->mentor->name ?? 'Mentor' }}</span> · {{ $c->category->name ?? '-' }}</div>
                         <div class="stars">
                             @for($i = 1; $i <= 5; $i++)
-                            <svg class="{{ $i <= floor($c['rating']) ? 'star-on' : 'star-off' }}" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="{{ $i <= floor($rating) ? 'star-on' : 'star-off' }}" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                             </svg>
                             @endfor
-                            <span class="rating-val">{{ $c['rating'] }}</span>
+                            <span class="rating-val">{{ $rating ?: 'Baru' }}</span>
                         </div>
                         <div class="course-price">
-                            <span class="price-now">{{ $c['price'] }}</span>
-                            <span class="price-was">{{ $c['was'] }}</span>
+                            <span class="price-now">{{ $c->isFree() ? 'Gratis' : 'Rp ' . number_format($c->price, 0, ',', '.') }}</span>
+                            <span class="price-was">{{ $c->enrollments_count ?? 0 }} siswa</span>
                         </div>
                     </div>
-                </div>
-                @endforeach
+                </a>
+                @empty
+                <p style="color:#64748b;">Belum ada kursus yang tersedia.</p>
+                @endforelse
             </div>
         </div>
     </section>
@@ -145,36 +140,35 @@
     <section class="popular">
         <div class="section">
             <h2 class="section-title">Popular classes</h2>
-            @php
-            $popular = [
-                ['title' => 'The Complete Digital Marketing Expert',                 'cat' => 'Marketing',   'rating' => 4.8, 'bg' => '3b82f6', 'fg' => 'ffffff'],
-                ['title' => 'The Business Startup Guide to Become an Entrepreneur', 'cat' => 'Business',    'rating' => 4.8, 'bg' => '6366f1', 'fg' => 'ffffff'],
-                ['title' => 'Best Way to Learn German Language: Full Bootcamp',     'cat' => 'Language',    'rating' => 4.9, 'bg' => '0ea5e9', 'fg' => 'ffffff'],
-                ['title' => 'Complete Web & Mobile Designer in 2023 UI/UX',         'cat' => 'Design',      'rating' => 4.7, 'bg' => '8b5cf6', 'fg' => 'ffffff'],
-            ];
-            @endphp
             <div class="popular-grid">
-                @foreach($popular as $c)
+                @forelse($popularCourses->take(4) as $c)
+                @php $rating = round($c->averageRating(), 1); @endphp
                 <div class="popular-card">
                     <div class="course-thumb">
-                        <img src="https://placehold.co/280x148/{{ $c['bg'] }}/{{ $c['fg'] }}?text={{ urlencode($c['cat']) }}" alt="{{ $c['title'] }}">
-                        <span class="badge-level">Beginner</span>
+                        @if($c->thumbnail)
+                            <img src="{{ asset('storage/' . $c->thumbnail) }}" alt="{{ $c->title }}">
+                        @else
+                            <img src="https://placehold.co/280x148/6366f1/ffffff?text={{ urlencode($c->category->name ?? 'Course') }}" alt="{{ $c->title }}">
+                        @endif
+                        <span class="badge-level">{{ $c->category->name ?? 'Course' }}</span>
                     </div>
                     <div class="course-body">
-                        <div class="course-title">{{ $c['title'] }}</div>
-                        <div class="course-author">By <span>Onecontributor</span> · {{ $c['cat'] }}</div>
+                        <div class="course-title">{{ $c->title }}</div>
+                        <div class="course-author">By <span>{{ $c->mentor->name ?? 'Mentor' }}</span> · {{ $c->category->name ?? '-' }}</div>
                         <div class="stars">
                             @for($i = 1; $i <= 5; $i++)
-                            <svg class="{{ $i <= floor($c['rating']) ? 'star-on' : 'star-off' }}" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="{{ $i <= floor($rating) ? 'star-on' : 'star-off' }}" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                             </svg>
                             @endfor
-                            <span class="rating-val">{{ $c['rating'] }}</span>
+                            <span class="rating-val">{{ $rating ?: 'Baru' }}</span>
                         </div>
-                        <a href="#" class="btn-start">Start Learning</a>
+                        <a href="{{ route('courses.show', $c->slug) }}" class="btn-start">Start Learning</a>
                     </div>
                 </div>
-                @endforeach
+                @empty
+                <p style="color:#64748b;">Belum ada kursus populer.</p>
+                @endforelse
             </div>
         </div>
     </section>

@@ -49,6 +49,17 @@ class CourseController extends Controller
         return redirect()->route('mentor.courses.index')->with('success', 'Kursus berhasil dibuat.');
     }
 
+    public function show(Course $course)
+    {
+        $this->authorizeMentor($course);
+
+        $course->load(['category', 'lessons', 'reviews.user']);
+        $course->loadCount(['enrollments', 'lessons', 'reviews', 'quizzes']);
+        $course->loadAvg('reviews', 'rating');
+
+        return view('mentor.courses.show', compact('course'));
+    }
+
     public function edit(Course $course)
     {
         $this->authorizeMentor($course);

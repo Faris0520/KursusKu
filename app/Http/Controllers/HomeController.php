@@ -10,6 +10,7 @@ class HomeController extends Controller
     public function index()
     {
         $popularCourses = Course::where('status', 'published')
+            ->with(['category', 'mentor'])
             ->withCount('enrollments')
             ->orderByDesc('enrollments_count')
             ->take(8)
@@ -17,6 +18,6 @@ class HomeController extends Controller
 
         $categories = Category::withCount('courses')->get();
 
-        return view('home', compact('popularCourses', 'categories'));
+        return view('welcome', compact('popularCourses', 'categories'));
     }
 }
