@@ -4,116 +4,73 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'KursusKu') }}</title>
+    <title>{{ config('app.name', 'Kursusku') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/welcome.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/panel.css') }}">
 </head>
-<body class="font-sans antialiased bg-gray-100" x-data="{ mobileOpen: false }">
-    <!-- Navbar -->
-    <nav class="bg-white border-b shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">KursusKu</a>
+<body style="font-family:'Inter',sans-serif;margin:0;background:#fff;">
 
-                    <!-- Nav Links Desktop -->
-                    <div class="hidden md:flex ml-8 space-x-4">
-                        <a href="{{ route('courses.index') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Kursus</a>
-                        @auth
-                            @if(auth()->user()->isAdmin())
-                                <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Admin</a>
-                            @elseif(auth()->user()->isMentor())
-                                <a href="{{ route('mentor.dashboard') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Mentor Panel</a>
-                            @else
-                                <a href="{{ route('siswa.dashboard') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Kursus Saya</a>
-                            @endif
-                        @endauth
-                    </div>
-                </div>
-
-                <!-- Right Side -->
-                <div class="flex items-center space-x-4">
-                    @guest
-                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-indigo-600 text-sm font-medium">Login</a>
-                        <a href="{{ route('register') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700">Register</a>
-                    @else
-                        <div class="relative" x-data="{ open: false }">
-                            <button@click="open = !open" class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-indigo-600">
-                                {{ auth()->user()->name }}
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </button>
-                            <div x-show="open"@click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
-                                </form>
-                            </div>
-                        </div>
-                    @endguest
-
-                    <!-- Mobile Hamburger -->
-                    <div class="md:hidden">
-                        <button@click="mobileOpen = !mobileOpen" class="text-gray-700">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                            </svg>
-                        </button>
-                    </div>
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="navbar-inner">
+            <div style="display:flex;align-items:center;gap:40px;">
+                <a href="{{ route('home') }}" class="navbar-logo">Kursusku<span>.</span></a>
+                <div class="navbar-links">
+                    <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+                    <a href="{{ route('courses.index') }}" class="{{ request()->routeIs('courses.*') ? 'active' : '' }}">Kursus</a>
                 </div>
             </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div x-show="mobileOpen" class="md:hidden border-t">
-            <div class="px-4 py-3 space-y-2">
-                <a href="{{ route('courses.index') }}" class="block text-gray-700 py-2">Kursus</a>
-                @auth
-                    @if(auth()->user()->isAdmin())
-                        <a href="{{ route('admin.dashboard') }}" class="block text-gray-700 py-2">Admin</a>
-                    @elseif(auth()->user()->isMentor())
-                        <a href="{{ route('mentor.dashboard') }}" class="block text-gray-700 py-2">Mentor Panel</a>
-                    @else
-                        <a href="{{ route('siswa.dashboard') }}" class="block text-gray-700 py-2">Kursus Saya</a>
-                    @endif
-                @endauth
+            <div class="navbar-actions" x-data="{ open: false }">
+                @guest
+                    <a href="{{ route('login') }}" class="btn-login">Login</a>
+                    <a href="{{ route('register') }}" class="btn-register">Register</a>
+                @else
+                    @php
+                        $dashUrl = auth()->user()->isAdmin()
+                            ? route('admin.dashboard')
+                            : (auth()->user()->isMentor()
+                                ? route('mentor.dashboard')
+                                : route('siswa.dashboard'));
+                    @endphp
+                    <a href="{{ $dashUrl }}" class="btn-login">Dashboard</a>
+                    <div style="position:relative;">
+                        <button @click="open = !open" :aria-expanded="open.toString()" aria-haspopup="true" class="btn-login" style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                            {{ auth()->user()->name }}
+                            <svg aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="panel-user-dropdown" x-show="open" @click.away="open = false" x-cloak>
+                            <a href="{{ route('profile.edit') }}">Profil</a>
+                            <form method="POST" action="{{ route('logout') }}" style="margin:0">
+                                @csrf
+                                <button type="submit">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                @endguest
             </div>
         </div>
     </nav>
 
-    <!-- Header -->
-    @isset($header)
-        <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                {{ $header }}
-            </div>
-        </header>
-    @endisset
-
-    <!-- Flash Messages -->
     @if(session('success'))
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-            <x-alert type="success" :message="session('success')"/>
+        <div style="max-width:1200px;margin:16px auto 0;padding:0 24px;">
+            <div class="panel-alert panel-alert-success">{{ session('success') }}</div>
         </div>
     @endif
     @if(session('error'))
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-            <x-alert type="error" :message="session('error')"/>
+        <div style="max-width:1200px;margin:16px auto 0;padding:0 24px;">
+            <div class="panel-alert panel-alert-error">{{ session('error') }}</div>
         </div>
     @endif
 
-    <!-- Content -->
-    <main>
-        {{ $slot }}
-    </main>
+    <main>{{ $slot }}</main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t mt-12 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
-            <p>&copy; {{ date('Y') }} KursusKu. Project UAS PBP.</p>
-        </div>
+    <footer style="background:#fff;border-top:1px solid #f0f0f0;margin-top:60px;padding:28px 0;text-align:center;font-size:0.8125rem;color:#9ca3af;font-family:'Inter',sans-serif;">
+        &copy; {{ date('Y') }} Kursusku. All rights reserved.
     </footer>
 
     @stack('scripts')
