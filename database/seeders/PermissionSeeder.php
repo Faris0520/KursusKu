@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -47,10 +46,5 @@ class PermissionSeeder extends Seeder
             $role = Role::firstOrCreate(['name' => $roleName]);
             $role->syncPermissions($permissions);
         }
-
-        // Samakan role Spatie dengan kolom `role` user yang sudah di-seed
-        User::where('email', 'admin@kursusku.test')->first()?->syncRoles(['admin']);
-        User::where('email', 'mentor@kursusku.test')->first()?->syncRoles(['mentor']);
-        User::where('email', 'siswa@kursusku.test')->first()?->syncRoles(['siswa']);
     }
 }

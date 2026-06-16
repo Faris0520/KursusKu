@@ -109,8 +109,8 @@ class CourseController extends Controller
     public function students(Course $course)
     {
         $this->authorizeMentor($course);
-        $students = $course->enrollments()->with('user')->latest()->paginate(20);
-        return view('mentor.courses.students', compact('course', 'students'));
+        $enrollments = $course->enrollments()->with('user')->latest()->paginate(20);
+        return view('mentor.courses.students', compact('course', 'enrollments'));
     }
 
     public function reviews(Course $course)
