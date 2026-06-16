@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'verified_mentor' => VerifiedMentorMiddleware::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'api/midtrans/callback',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

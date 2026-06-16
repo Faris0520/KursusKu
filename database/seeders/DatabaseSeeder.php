@@ -40,9 +40,11 @@ class DatabaseSeeder extends Seeder
     ]);
 
     // Kategori
-    $categories = ['Web Development', 'Mobile Development', 'Data Science', 'UI/UX Design', 'DevOps'];
+    $categories = ['Desain Grafis', 'Pemrograman', 'Fotografi', 'Marketing', 'Bahasa Asing'];
     foreach ($categories as $name) {
         Category::create(['name' => $name]);
     }
+
+    $this->call(PermissionSeeder::class);
 }
 }

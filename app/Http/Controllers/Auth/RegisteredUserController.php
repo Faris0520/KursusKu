@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class RegisteredUserController extends Controller
 {
@@ -34,7 +35,8 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'in:siswa,mentor']
+            'role' => ['required', 'in:siswa,mentor'],
+            'mentor_reason' => ['required_if:role,mentor', 'nullable', 'string', 'max:1000'],
         ]);
 
         $user = User::create([
@@ -42,7 +44,11 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'mentor_reason' => $request->role === 'mentor' ? $request->mentor_reason : null,
         ]);
+
+        $role = Role::findByName($request->role);
+        $user->syncRoles([$role]);
 
         event(new Registered($user));
 

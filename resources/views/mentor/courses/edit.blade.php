@@ -1,51 +1,64 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold">Edit Kursus: {{ $course->title }}</h2>
-    </x-slot>
+<x-panel-layout>
+    <div class="panel-breadcrumb">
+        <a href="{{ route('mentor.courses.index') }}">Kursus Saya</a> /
+        <a href="{{ route('mentor.courses.show', $course) }}">{{ $course->title }}</a> / Edit
+    </div>
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 rounded-lg shadow">
-                <form method="POST" action="{{ route('mentor.courses.update', $course) }}" enctype="multipart/form-data">
-                    @csrf @method('PUT')
-                    <div class="mb-4">
-                        <x-input-label for="title" value="Judul Kursus"/>
-                        <x-text-input id="title" name="title" class="mt-1 block w-full" :value="old('title', $course->title)" required/>
-                        <x-input-error :messages="$errors->get('title')" class="mt-2"/>
-                    </div>
-                    <div class="mb-4">
-                        <x-input-label for="category_id" value="Kategori"/>
-                        <select id="category_id" name="category_id" class="mt-1 block w-full rounded-md border-gray-300">
-                            @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}"@selected(old('category_id',$course->category_id) == $cat->id)>{{ $cat->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <x-input-label for="description" value="Deskripsi"/>
-                        <textarea id="description" name="description" rows="5" class="mt-1 block w-full rounded-md border-gray-300" required>{{ old('description', $course->description) }}</textarea>
-                    </div>
-                    <div class="mb-4">
-                        <x-input-label for="price" value="Harga"/>
-                        <x-text-input id="price" name="price" type="number" step="1000" min="0" class="mt-1 block w-full" :value="old('price', $course->price)" required/>
-                    </div>
-                    <div class="mb-4">
-                        <x-input-label for="status" value="Status"/>
-                        <select id="status" name="status" class="mt-1 block w-full rounded-md border-gray-300">
-                            <option value="draft"@selected($course->status == 'draft')>Draft</option>
-                            <option value="published"@selected($course->status == 'published')>Published</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <x-input-label for="thumbnail" value="Thumbnail (kosongkan jika tidak diubah)"/>
-                        @if($course->thumbnail)
-                            <img src="{{ asset('storage/' . $course->thumbnail) }}" class="w-32 h-20 object-cover rounded mb-2">
-                        @endif
-                        <input id="thumbnail" name="thumbnail" type="file" accept="image/*" class="mt-1 block w-full">
-                    </div>
-                    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700">Update</button>
-                </form>
-            </div>
+    <h1 class="panel-page-title" style="margin:8px 0 24px;">Edit Kursus</h1>
+
+    <div class="panel-card" style="max-width:720px;">
+        <div class="panel-card-body">
+            <form method="POST" action="{{ route('mentor.courses.update', $course) }}" enctype="multipart/form-data">
+                @csrf @method('PUT')
+
+                <div class="panel-form-group">
+                    <label class="panel-form-label" for="title">Judul Kursus</label>
+                    <input class="panel-form-input" id="title" name="title" value="{{ old('title', $course->title) }}" required>
+                    @error('title')<p class="panel-form-error">{{ $message }}</p>@enderror
+                </div>
+
+                <div class="panel-form-group">
+                    <label class="panel-form-label" for="category_id">Kategori</label>
+                    <select class="panel-form-select" id="category_id" name="category_id">
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}" @selected(old('category_id', $course->category_id) == $cat->id)>{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="panel-form-group">
+                    <label class="panel-form-label" for="description">Deskripsi</label>
+                    <textarea class="panel-form-textarea" id="description" name="description" required>{{ old('description', $course->description) }}</textarea>
+                </div>
+
+                <div class="panel-form-group">
+                    <label class="panel-form-label" for="price">Harga</label>
+                    <input class="panel-form-input" id="price" name="price" type="number" step="1000" min="0" value="{{ old('price', $course->price) }}" required>
+                </div>
+
+                <div class="panel-form-group">
+                    <label class="panel-form-label" for="status">Status</label>
+                    <select class="panel-form-select" id="status" name="status">
+                        <option value="draft"      @selected($course->status === 'draft')>Draft</option>
+                        <option value="published"  @selected($course->status === 'published')>Published</option>
+                    </select>
+                </div>
+
+                <div class="panel-form-group">
+                    <label class="panel-form-label" for="thumbnail">Thumbnail</label>
+                    @if($course->thumbnail)
+                        <img src="{{ asset('storage/' . $course->thumbnail) }}"
+                             style="width:120px;height:76px;object-fit:cover;border-radius:6px;display:block;margin-bottom:8px;">
+                    @endif
+                    <input class="panel-form-file" id="thumbnail" name="thumbnail" type="file" accept="image/*">
+                    <p class="panel-form-hint">Kosongkan jika tidak ingin mengubah thumbnail.</p>
+                </div>
+
+                <div style="display:flex;gap:10px;margin-top:8px;">
+                    <button type="submit" class="btn-register">Update Kursus</button>
+                    <a href="{{ route('mentor.courses.show', $course) }}" class="btn-outline">Batal</a>
+                </div>
+            </form>
         </div>
     </div>
-</x-app-layout>
+</x-panel-layout>

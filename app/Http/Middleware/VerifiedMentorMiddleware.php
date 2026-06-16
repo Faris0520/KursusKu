@@ -15,8 +15,12 @@ class VerifiedMentorMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || !$request->user()->isMentor() || !$request->user()->isVerified()) {
-            abort(403, 'Akun mentor belum diverifikasi, silakan hubungi admin untuk informasi lebih lanjut.');
+        if (!$request->user() || !$request->user()->isMentor()) {
+            abort(403);
+        }
+
+        if (!$request->user()->isVerified()) {
+            return redirect()->route('mentor.pending');
         }
 
         return $next($request);

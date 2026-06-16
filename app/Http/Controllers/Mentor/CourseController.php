@@ -28,7 +28,9 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
-         $validated = $request->validate([
+        $this->authorize('create-course'); // Spatie
+
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string',
@@ -47,6 +49,17 @@ class CourseController extends Controller
         return redirect()->route('mentor.courses.index')->with('success', 'Kursus berhasil dibuat.');
     }
 
+    public function show(Course $course)
+    {
+        $this->authorizeMentor($course);
+
+        $course->load(['category', 'lessons', 'reviews.user']);
+        $course->loadCount(['enrollments', 'lessons', 'reviews', 'quizzes']);
+        $course->loadAvg('reviews', 'rating');
+
+        return view('mentor.courses.show', compact('course'));
+    }
+
     public function edit(Course $course)
     {
         $this->authorizeMentor($course);
@@ -56,6 +69,7 @@ class CourseController extends Controller
 
     public function update(Request $request, Course $course)
     {
+        $this->authorize('edit-own-course'); // Spatie
         $this->authorizeMentor($course);
 
         $validated = $request->validate([
@@ -81,7 +95,9 @@ class CourseController extends Controller
 
     public function destroy(Course $course)
     {
+        $this->authorize('delete-own-course'); // Spatie
         $this->authorizeMentor($course);
+        
         if ($course->thumbnail) {
             Storage::disk('public')->delete($course->thumbnail);
         }
@@ -93,8 +109,8 @@ class CourseController extends Controller
     public function students(Course $course)
     {
         $this->authorizeMentor($course);
-        $students = $course->enrollments()->with('user')->latest()->paginate(20);
-        return view('mentor.courses.students', compact('course', 'students'));
+        $enrollments = $course->enrollments()->with('user')->latest()->paginate(20);
+        return view('mentor.courses.students', compact('course', 'enrollments'));
     }
 
     public function reviews(Course $course)

@@ -1,33 +1,34 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Quiz: {{ $course->title }}</h2>
-            <a href="{{ route('mentor.quizzes.create', $course) }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm">Buat Quiz</a>
-        </div>
-    </x-slot>
+<x-panel-layout>
+    <div class="panel-breadcrumb">
+        <a href="{{ route('mentor.courses.index') }}">Kursus Saya</a> /
+        <a href="{{ route('mentor.courses.show', $course) }}">{{ $course->title }}</a> /
+        Quiz
+    </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="space-y-3">
-                @forelse($quizzes as $quiz)
-                <div class="bg-white p-4 rounded-lg shadow flex items-center justify-between">
-                    <div>
-                        <p class="font-medium">{{ $quiz->title }}</p>
-                        <p class="text-sm text-gray-500">{{ $quiz->questions_count }} soal</p>
-                    </div>
-                    <div class="flex gap-2 text-sm">
-                        <a href="{{ route('mentor.questions.index', [$course, $quiz]) }}" class="text-indigo-600 hover:underline">Kelola Soal</a>
-                        <a href="{{ route('mentor.quizzes.edit', [$course, $quiz]) }}" class="text-indigo-600 hover:underline">Edit</a>
-                        <form method="POST" action="{{ route('mentor.quizzes.destroy', [$course, $quiz]) }}" onsubmit="return confirm('Yakin hapus?')">
-                            @csrf @method('DELETE')
-                            <button class="text-red-600 hover:underline">Hapus</button>
-                        </form>
-                    </div>
-                </div>
-                @empty
-                <p class="text-gray-500 text-center py-8">Belum ada quiz.</p>
-                @endforelse
+    <div class="panel-page-header" style="margin-top:8px;">
+        <h1 class="panel-page-title">Quiz &mdash; {{ $course->title }}</h1>
+        <a href="{{ route('mentor.quizzes.create', $course) }}" class="btn-register">+ Tambah Quiz</a>
+    </div>
+
+    <div>
+        @forelse($quizzes as $quiz)
+        <div class="panel-list-item">
+            <div class="panel-list-item-info">
+                <p class="panel-list-item-title">{{ $quiz->title }}</p>
+                <p class="panel-list-item-meta">{{ $quiz->questions_count }} soal</p>
+            </div>
+            <div class="panel-list-item-actions">
+                <a href="{{ route('mentor.questions.index', [$course, $quiz]) }}" class="btn-outline btn-sm">Kelola Soal</a>
+                <a href="{{ route('mentor.quizzes.edit', [$course, $quiz]) }}" class="btn-outline btn-sm">Edit</a>
+                <form method="POST" action="{{ route('mentor.quizzes.destroy', [$course, $quiz]) }}"
+                      onsubmit="return confirm('Yakin hapus quiz ini beserta semua soalnya?')" style="margin:0">
+                    @csrf @method('DELETE')
+                    <button class="btn-danger btn-sm">Hapus</button>
+                </form>
             </div>
         </div>
+        @empty
+        <div class="panel-empty">Belum ada quiz. Tambahkan quiz pertama untuk kursus ini.</div>
+        @endforelse
     </div>
-</x-app-layout>
+</x-panel-layout>
