@@ -117,7 +117,7 @@
                 @endif
             </div>
 
-            {{-- Review Form â€” only on last lesson --}}
+            {{-- Review Form only on last lesson --}}
             @unless($nextLesson)
             <div class="panel-card">
                 <div class="panel-card-header">
@@ -144,7 +144,7 @@
                                            @if(old('rating', 5) == $star) checked @endif>
                                     <span @click="rating = {{ $star }}"
                                           :style="rating >= {{ $star }} ? 'color:#f59e0b' : 'color:#d1d5db'"
-                                          style="{{ old('rating', 5) >= $star ? 'color:#f59e0b' : 'color:#d1d5db' }}">â˜…</span>
+                                          style="{{ old('rating', 5) >= $star ? 'color:#f59e0b' : 'color:#d1d5db' }}">★</span>
                                 </label>
                                 @endfor
                             </div>

@@ -16,16 +16,35 @@ Route::get('/courses', [CourseController::class, 'index'])->name('courses.index'
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    $user = auth()->user();
+    if ($user->isAdmin()) return redirect()->route('admin.dashboard');
+    if ($user->isMentor()) {
+        return $user->isVerified()
+            ? redirect()->route('mentor.dashboard')
+            : redirect()->route('mentor.pending');
+    }
+    return redirect()->route('siswa.dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/payment/{course:slug}/success', function (\App\Models\Course $course) {
+        return redirect()->route('siswa.dashboard')
+            ->with('success', 'Pembayaran berhasil! Kamu sekarang bisa mengakses kursus "' . $course->title . '".');
+    })->name('payment.success');
+
+    Route::get('/payment/{course:slug}/failed', function (\App\Models\Course $course) {
+        return redirect()->route('courses.show', $course->slug)
+            ->with('error', 'Pembayaran dibatalkan. Silakan coba lagi jika ingin melanjutkan pembelian.');
+    })->name('payment.failed');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/courses/{course}/enroll-free', [EnrollmentController::class, 'enrollFree'])->name('enrollment.free');
-    Route::post('/courses/{course}/pay', [TransactionController::class, 'create'])->name('transaction.create');
+    Route::get('/courses/{course}/pay', [TransactionController::class, 'create'])->name('transaction.create');
+    Route::post('/courses/{course}/pay/initiate', [TransactionController::class, 'initiate'])->name('transaction.initiate');
     Route::get('/transactions', [TransactionController::class, 'history'])->name('transactions.history');
+    Route::post('/transactions/{transaction}/resume', [TransactionController::class, 'resume'])->name('transaction.resume');
 });
 
 require __DIR__.'/auth.php';
@@ -46,9 +65,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Categories
     Route::resource('/categories', Admin\CategoryController::class);
+
+    // Transactions
+    Route::get('/transactions', [Admin\TransactionController::class, 'index'])->name('transactions.index');
 });
 
 // Mentor routes
+Route::middleware(['auth', 'role:mentor'])->prefix('mentor')->name('mentor.')->group(function () {
+    Route::get('/pending', function () {
+        return view('mentor.pending');
+    })->name('pending');
+});
+
 Route::middleware(['auth', 'role:mentor', 'verified_mentor'])->prefix('mentor')->name('mentor.')->group(function () {
     Route::get('/dashboard', [Mentor\DashboardController::class, 'index'])->name('dashboard');
 

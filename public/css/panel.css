@@ -1,0 +1,613 @@
+/* === KURSUSKU PANEL STYLESHEET ===
+   Design tokens identik dengan welcome.css
+   Primary: #2563eb | Font: Inter | Surface: #f9fafb */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+[x-cloak] { display: none !important; }
+
+body.panel-body {
+    font-family: 'Inter', sans-serif;
+    background: #f9fafb;
+    color: #111827;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* ==================== TOPBAR ==================== */
+.panel-topbar {
+    height: 56px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.panel-topbar-logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #111827;
+    text-decoration: none;
+}
+
+.panel-topbar-logo span { color: #2563eb; }
+
+.panel-hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: #374151;
+}
+
+.panel-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+}
+
+.panel-user-btn:hover { background: #f3f4f6; }
+
+.panel-user-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    width: 180px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    overflow: hidden;
+    z-index: 200;
+}
+
+.panel-user-dropdown a,
+.panel-user-dropdown button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 0.875rem;
+    color: #374151;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+}
+
+.panel-user-dropdown a:hover,
+.panel-user-dropdown button:hover { background: #f9fafb; }
+
+/* ==================== LAYOUT ==================== */
+.panel-wrapper { display: flex; min-height: calc(100vh - 56px); }
+
+/* ==================== SIDEBAR ==================== */
+.panel-sidebar {
+    width: 220px;
+    background: #fff;
+    border-right: 1px solid #f0f0f0;
+    padding: 16px 0;
+    flex-shrink: 0;
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+}
+
+.sidebar-section-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0 16px 6px;
+    margin-top: 16px;
+}
+
+.sidebar-section-label:first-child { margin-top: 8px; }
+
+.sidebar-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-decoration: none;
+    transition: background 0.12s, color 0.12s;
+}
+
+.sidebar-nav-link:hover { background: #eff6ff; color: #2563eb; }
+
+.sidebar-nav-link.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.sidebar-nav-link svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
+.sidebar-nav-link.active svg, .sidebar-nav-link:hover svg { opacity: 1; }
+
+/* ==================== MAIN ==================== */
+.panel-main { flex: 1; min-width: 0; }
+
+.panel-content { padding: 32px; max-width: 1080px; width: 100%; }
+
+.panel-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.panel-page-title { font-size: 1.375rem; font-weight: 700; color: #111827; }
+
+.panel-breadcrumb { font-size: 0.8125rem; color: #6b7280; margin-bottom: 4px; }
+.panel-breadcrumb a { color: #2563eb; text-decoration: none; }
+.panel-breadcrumb a:hover { text-decoration: underline; }
+
+/* ==================== STAT CARDS ==================== */
+.stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 20px 24px;
+}
+
+.stat-card-label { font-size: 0.8125rem; color: #6b7280; margin-bottom: 8px; }
+
+.stat-card-value { font-size: 1.875rem; font-weight: 700; color: #111827; line-height: 1; }
+.stat-card-value.green  { color: #16a34a; }
+.stat-card-value.yellow { color: #ca8a04; }
+.stat-card-value.blue   { color: #2563eb; }
+
+/* ==================== PANEL CARD ==================== */
+.panel-card {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.panel-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.panel-card-title { font-size: 0.9375rem; font-weight: 600; color: #111827; }
+.panel-card-body { padding: 20px; }
+
+/* ==================== TABLE ==================== */
+.panel-table { width: 100%; border-collapse: collapse; }
+
+.panel-table thead th {
+    background: #f9fafb;
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.panel-table tbody td {
+    padding: 13px 16px;
+    font-size: 0.875rem;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+}
+
+.panel-table tbody tr:last-child td { border-bottom: none; }
+.panel-table tbody tr:hover td { background: #fafafa; }
+
+/* ==================== BADGES ==================== */
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.badge-published { background: #dcfce7; color: #16a34a; }
+.badge-draft     { background: #fef9c3; color: #a16207; }
+.badge-paid      { background: #dcfce7; color: #16a34a; }
+.badge-pending   { background: #fef9c3; color: #a16207; }
+.badge-failed    { background: #fee2e2; color: #dc2626; }
+.badge-expired   { background: #f3f4f6; color: #6b7280; }
+.badge-free      { background: #dbeafe; color: #1d4ed8; }
+
+/* ==================== FORM ==================== */
+.panel-form-group { margin-bottom: 20px; }
+
+.panel-form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.panel-form-input,
+.panel-form-textarea,
+.panel-form-select {
+    width: 100%;
+    padding: 9px 12px;
+    font-size: 0.875rem;
+    font-family: 'Inter', sans-serif;
+    color: #111827;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -webkit-appearance: none;
+}
+
+.panel-form-input:focus,
+.panel-form-textarea:focus,
+.panel-form-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+}
+
+.panel-form-textarea { resize: vertical; min-height: 120px; }
+
+.panel-form-error { font-size: 0.8125rem; color: #dc2626; margin-top: 4px; }
+.panel-form-hint  { font-size: 0.8125rem; color: #6b7280; margin-top: 4px; }
+
+/* ==================== BUTTONS ==================== */
+/* .btn-register & .btn-login diwariskan dari welcome.css */
+
+.btn-danger {
+    display: inline-block;
+    padding: 7px 18px;
+    background: #dc2626;
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+
+.btn-danger:hover { background: #b91c1c; }
+
+.btn-outline {
+    display: inline-block;
+    padding: 7px 18px;
+    background: none;
+    color: #374151;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-outline:hover { border-color: #2563eb; color: #2563eb; }
+.btn-sm { padding: 5px 12px; font-size: 0.75rem; }
+
+/* ==================== ALERTS ==================== */
+.panel-alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    margin-bottom: 20px;
+}
+
+.panel-alert-success { background: #dcfce7; color: #16a34a; }
+.panel-alert-error   { background: #fee2e2; color: #dc2626; }
+
+/* ==================== EMPTY STATE ==================== */
+.panel-empty { text-align: center; padding: 56px 24px; color: #9ca3af; font-size: 0.875rem; }
+
+/* ==================== MENTOR COURSE GRID ==================== */
+.mentor-course-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.mentor-course-card {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 18px;
+    text-decoration: none;
+    display: block;
+    transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.mentor-course-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.07); border-color: #bfdbfe; }
+.mentor-course-card h4 { font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 4px; line-height: 1.4; }
+.mentor-course-card .meta { font-size: 0.8125rem; color: #9ca3af; margin-bottom: 14px; }
+.mentor-course-card-footer { display: flex; align-items: center; justify-content: space-between; }
+
+/* ==================== LIST ITEM ==================== */
+.panel-list-item {
+    background: #fff;
+    border: 1px solid #f3f4f6;
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    transition: border-color 0.12s;
+}
+
+.panel-list-item:hover { border-color: #bfdbfe; }
+.panel-list-item-info { flex: 1; min-width: 0; }
+.panel-list-item-title { font-size: 0.875rem; font-weight: 600; color: #111827; }
+.panel-list-item-meta  { font-size: 0.8125rem; color: #9ca3af; margin-top: 2px; }
+.panel-list-item-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+/* ==================== DETAIL GRID ==================== */
+.panel-detail-grid { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start; }
+.panel-detail-sidebar { position: sticky; top: 80px; }
+
+.panel-stat-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.panel-stat-mini { background: #f9fafb; border-radius: 8px; padding: 12px; text-align: center; }
+.panel-stat-mini-val { font-size: 1.375rem; font-weight: 700; color: #111827; }
+.panel-stat-mini-label { font-size: 0.75rem; color: #6b7280; }
+
+/* ==================== CATALOG ==================== */
+.catalog-filter-bar {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    display: grid;
+    grid-template-columns: 1fr 200px 160px auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.catalog-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+/* ==================== HOME GRIDS ==================== */
+.home-category-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+
+.home-courses-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.home-category-card {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    text-decoration: none;
+    transition: box-shadow .15s, border-color .15s;
+    display: block;
+}
+
+.home-category-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,.07);
+    border-color: #bfdbfe;
+}
+
+@media (max-width: 1024px) {
+    .home-category-grid { grid-template-columns: repeat(4, 1fr); }
+    .home-courses-grid  { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .home-category-grid { grid-template-columns: repeat(3, 1fr); }
+    .home-courses-grid  { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+    .home-category-grid { grid-template-columns: repeat(2, 1fr); }
+    .home-courses-grid  { grid-template-columns: 1fr; }
+}
+
+/* ==================== PAYMENT ==================== */
+.payment-card {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 14px;
+    padding: 48px 40px;
+    max-width: 480px;
+    margin: 60px auto;
+    text-align: center;
+}
+
+.payment-amount { font-size: 2.25rem; font-weight: 800; color: #111827; margin: 8px 0 28px; }
+
+/* ==================== SISWA ENROLLED ==================== */
+.enrolled-course-card {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    text-decoration: none;
+    transition: border-color 0.12s;
+}
+
+.enrolled-course-card:hover { border-color: #bfdbfe; }
+.enrolled-course-thumb { width: 80px; height: 56px; object-fit: cover; border-radius: 6px; flex-shrink: 0; background: #f3f4f6; }
+.enrolled-course-info { flex: 1; min-width: 0; }
+.enrolled-course-title { font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 2px; }
+.enrolled-course-meta  { font-size: 0.8125rem; color: #9ca3af; }
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1024px) {
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    .mentor-course-grid { grid-template-columns: repeat(2, 1fr); }
+    .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+    .panel-detail-grid { grid-template-columns: 1fr; }
+    .panel-detail-sidebar { position: static; }
+    .catalog-filter-bar { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+    .panel-hamburger { display: block; }
+    .panel-sidebar { display: none; }
+    .panel-sidebar.mobile-open {
+        display: block;
+        position: fixed;
+        top: 56px; left: 0;
+        height: calc(100vh - 56px);
+        z-index: 50;
+        box-shadow: 4px 0 12px rgba(0,0,0,.08);
+    }
+    .panel-sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        top: 56px;
+        background: rgba(0,0,0,.3);
+        z-index: 40;
+    }
+    .panel-content { padding: 20px 16px; }
+}
+
+@media (max-width: 600px) {
+    .stat-cards { grid-template-columns: 1fr 1fr; }
+    .mentor-course-grid { grid-template-columns: 1fr; }
+    .catalog-grid { grid-template-columns: 1fr; }
+    .catalog-filter-bar { grid-template-columns: 1fr; }
+    .payment-card { padding: 28px 20px; margin: 32px auto; }
+}
+
+/* ==================== LEARNING PAGE ==================== */
+.learning-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.learning-sidebar {
+    position: sticky;
+    top: 76px;
+}
+
+.learning-lesson-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 16px;
+    text-decoration: none;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background .1s;
+}
+
+.learning-lesson-item:hover { background: #f9fafb; }
+
+.learning-lesson-item.active {
+    background: #eff6ff;
+    border-left: 3px solid #2563eb;
+}
+
+.learning-lesson-num {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    background: #e5e7eb;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+
+.learning-lesson-item.active .learning-lesson-num {
+    background: #2563eb;
+    color: #fff;
+}
+
+.learning-lesson-title {
+    font-size: 0.875rem;
+    color: #374151;
+    line-height: 1.45;
+}
+
+.learning-lesson-item.active .learning-lesson-title {
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+.youtube-embed {
+    position: relative;
+    padding-top: 56.25%;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.youtube-embed iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+@media (max-width: 900px) {
+    .learning-layout {
+        grid-template-columns: 1fr;
+    }
+    .learning-sidebar {
+        position: static;
+        order: 2;
+    }
+    .learning-main-col {
+        order: 1;
+    }
+}

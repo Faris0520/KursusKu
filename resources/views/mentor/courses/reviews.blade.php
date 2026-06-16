@@ -4,7 +4,7 @@
         <a href="{{ route('mentor.courses.show', $course) }}">{{ $course->title }}</a> / Review
     </div>
 
-    <h1 class="panel-page-title" style="margin:8px 0 24px;">Review â€” {{ $course->title }}</h1>
+    <h1 class="panel-page-title" style="margin:8px 0 24px;">Review - {{ $course->title }}</h1>
 
     <div class="panel-card">
         <table class="panel-table">
@@ -20,7 +20,7 @@
                 @forelse($reviews as $review)
                 <tr>
                     <td style="font-weight:600;">{{ $review->user->name }}</td>
-                    <td style="color:#f59e0b;">{{ str_repeat('â˜…', $review->rating) }}{{ str_repeat('â˜†', 5 - $review->rating) }}</td>
+                    <td style="color:#f59e0b;">{{ str_repeat('★', $review->rating) }}{{ str_repeat('☆', 5 - $review->rating) }}</td>
                     <td style="color:#374151;">{{ $review->comment ?? '-' }}</td>
                     <td style="color:#9ca3af;">{{ $review->created_at->format('d M Y') }}</td>
                 </tr>

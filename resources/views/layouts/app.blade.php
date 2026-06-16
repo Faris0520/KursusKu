@@ -19,14 +19,13 @@
             <div style="display:flex;align-items:center;gap:40px;">
                 <a href="{{ route('home') }}" class="navbar-logo">Kursusku<span>.</span></a>
                 <div class="navbar-links">
-                    <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+                    <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a>
                     <a href="{{ route('courses.index') }}" class="{{ request()->routeIs('courses.*') ? 'active' : '' }}">Kursus</a>
                 </div>
             </div>
             <div class="navbar-actions" x-data="{ open: false }">
                 @guest
-                    <a href="{{ route('login') }}" class="btn-login">Login</a>
-                    <a href="{{ route('register') }}" class="btn-register">Register</a>
+                    <a href="{{ route('login') }}" class="btn-register">Login</a>
                 @else
                     @php
                         $dashUrl = auth()->user()->isAdmin()
@@ -37,9 +36,16 @@
                     @endphp
                     <a href="{{ $dashUrl }}" class="btn-login">Dashboard</a>
                     <div style="position:relative;">
-                        <button @click="open = !open" :aria-expanded="open.toString()" aria-haspopup="true" class="btn-login" style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-                            {{ auth()->user()->name }}
-                            <svg aria-hidden="true" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button @click="open = !open" :aria-expanded="open.toString()" aria-haspopup="true" style="display:flex;align-items:center;gap:8px;cursor:pointer;background:none;border:none;padding:0;font-family:'Inter',sans-serif;">
+                            <div style="width:32px;height:32px;border-radius:50%;overflow:hidden;background:#e0e7ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                @if(auth()->user()->avatar)
+                                    <img src="{{ asset('storage/' . auth()->user()->avatar) }}" style="width:100%;height:100%;object-fit:cover;">
+                                @else
+                                    <span style="font-size:0.875rem;font-weight:700;color:#2563eb;">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                                @endif
+                            </div>
+                            <span style="font-size:0.875rem;font-weight:500;color:#374151;">{{ auth()->user()->name }}</span>
+                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>

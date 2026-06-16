@@ -53,7 +53,7 @@
                     <div style="padding:14px 20px;border-bottom:1px solid #f3f4f6;">
                         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
                             <span style="font-size:0.875rem;font-weight:600;color:#111827;">{{ $review->user->name }}</span>
-                            <span style="color:#f59e0b;">{{ str_repeat('â˜…', $review->rating) }}{{ str_repeat('â˜†', 5 - $review->rating) }}</span>
+                            <span style="color:#f59e0b;">{{ str_repeat('★', $review->rating) }}{{ str_repeat('☆', 5 - $review->rating) }}</span>
                         </div>
                         @if($review->comment)
                             <p style="font-size:0.875rem;color:#374151;">{{ $review->comment }}</p>

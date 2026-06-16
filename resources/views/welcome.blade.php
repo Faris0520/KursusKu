@@ -6,10 +6,9 @@
     <title>Kursusku</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('css/welcome.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/panel.css') }}">
 </head>
 <body>
 
@@ -19,15 +18,11 @@
             <div style="display:flex;align-items:center;gap:40px;">
                 <a href="/" class="navbar-logo">Kursusku<span>.</span></a>
                 <div class="navbar-links">
-                    <a href="#" class="active">Home</a>
-                    <a href="#">Course</a>
-                    <a href="#">Bootcamp</a>
-                    <a href="#">Page</a>
-                    <a href="#">Blog</a>
-                    <a href="#">Contact</a>
+                    <a href="/" class="active">Beranda</a>
+                    <a href="/courses">Kursus</a>
                 </div>
             </div>
-            <div class="navbar-actions">
+            <div class="navbar-actions" x-data="{ open: false }">
                 @auth
                     @php
                         $dashUrl = auth()->user()->isAdmin()
@@ -37,13 +32,30 @@
                                 : route('siswa.dashboard'));
                     @endphp
                     <a href="{{ $dashUrl }}" class="btn-login">Dashboard</a>
-                    <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-                        @csrf
-                        <button type="submit" class="btn-register">Logout</button>
-                    </form>
+                    <div style="position:relative;">
+                        <button @click="open = !open" style="display:flex;align-items:center;gap:8px;cursor:pointer;background:none;border:none;padding:0;font-family:'Inter',sans-serif;">
+                            <div style="width:32px;height:32px;border-radius:50%;overflow:hidden;background:#e0e7ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                @if(auth()->user()->avatar)
+                                    <img src="{{ asset('storage/' . auth()->user()->avatar) }}" style="width:100%;height:100%;object-fit:cover;">
+                                @else
+                                    <span style="font-size:0.875rem;font-weight:700;color:#2563eb;">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                                @endif
+                            </div>
+                            <span style="font-size:0.875rem;font-weight:500;color:#374151;">{{ auth()->user()->name }}</span>
+                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="panel-user-dropdown" x-show="open" @click.away="open = false" x-cloak style="z-index:9999;">
+                            <a href="{{ route('profile.edit') }}">Profil</a>
+                            <form method="POST" action="{{ route('logout') }}" style="margin:0">
+                                @csrf
+                                <button type="submit">Logout</button>
+                            </form>
+                        </div>
+                    </div>
                 @else
-                    <a href="{{ route('login') }}" class="btn-login">Login</a>
-                    <a href="{{ route('register') }}" class="btn-register">Register</a>
+                    <a href="{{ route('login') }}" class="btn-register">Login</a>
                 @endauth
             </div>
         </div>
@@ -56,8 +68,8 @@
                 <div class="hero-text">
                     <h1>Perdalam Skillmu<br>di Kursusku!</h1>
                     <div class="hero-btns">
-                        <a href="{{ route('register') }}" class="btn-hero-primary">Subscribe</a>
-                        <a href="#featured" class="btn-hero-outline">Learn Now</a>
+                        <a href="{{ route('register') }}" class="btn-hero-primary">Gabung Sekarang</a>
+                        <a href="/courses" class="btn-hero-outline">Lihat Kursus</a>
                     </div>
                 </div>
                 <div class="hero-img">
@@ -67,30 +79,38 @@
         </div>
     </section>
 
-    <!-- Category Bar -->       
+    <!-- Category Bar -->
     <div class="category-bar">
         <div class="category-bar-inner">
-            @php
-            $cats = [
-                ['name' => 'All Categories', 'd' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'],
-                ['name' => 'Business',       'd' => 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'],
-                ['name' => 'Development',    'd' => 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4'],
-                ['name' => 'Language',       'd' => 'M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129'],
-                ['name' => 'Marketing',      'd' => 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z'],
-                ['name' => 'Finance',        'd' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
-                ['name' => 'Design',         'd' => 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01'],
-                ['name' => 'Photography',    'd' => 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9zm7 5a2 2 0 114 0 2 2 0 01-4 0z'],
-                ['name' => 'Office',         'd' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
-            ];
-            @endphp
-            @foreach($cats as $cat)
-            <a href="#" class="cat-item">
+            <a href="{{ route('courses.index') }}" class="cat-item">
                 <div class="cat-icon">
                     <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="{{ $cat['d'] }}"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                     </svg>
                 </div>
-                <span class="cat-name">{{ $cat['name'] }}</span>
+                <span class="cat-name">Semua</span>
+            </a>
+            @php
+            $catIcons = [
+                'Pemrograman'   => 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+                'Development'   => 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+                'Desain Grafis' => 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01',
+                'Design'        => 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01',
+                'Fotografi'     => 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9zm7 5a2 2 0 114 0 2 2 0 01-4 0z',
+                'Photography'   => 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9zm7 5a2 2 0 114 0 2 2 0 01-4 0z',
+                'Marketing'     => 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z',
+                'Bahasa Asing'  => 'M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129' 
+                ];
+            $defaultIcon = 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253';
+            @endphp
+            @foreach($categories as $cat)
+            <a href="{{ route('courses.index', ['category' => $cat->id]) }}" class="cat-item">
+                <div class="cat-icon">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="{{ $catIcons[$cat->name] ?? $defaultIcon }}"/>
+                    </svg>
+                </div>
+                <span class="cat-name">{{ $cat->name }}</span>
             </a>
             @endforeach
         </div>
@@ -125,7 +145,7 @@
                         </div>
                         <div class="course-price">
                             <span class="price-now">{{ $c->isFree() ? 'Gratis' : 'Rp ' . number_format($c->price, 0, ',', '.') }}</span>
-                            <span class="price-was">{{ $c->enrollments_count ?? 0 }} siswa</span>
+                            <span class="course-students">{{ $c->enrollments_count ?? 0 }} siswa</span>
                         </div>
                     </div>
                 </a>
@@ -178,17 +198,17 @@
         <div class="section">
             <div class="why-inner">
                 <div class="why-img">
-                    <img src="https://placehold.co/540x380/f0f9ff/0284c7?text=Learning+Environment" alt="Learning Environment">
+                    <img src="{{ asset('images/learning-environment.jpg') }}" alt="Learning Environment" style="width:600px;height:380px;object-fit:cover;">
                 </div>
                 <div class="why-content">
-                    <h2>Why Upskill becomes the best training course &amp; bootcamp.</h2>
+                    <h2>Kenapa KursusKu menjadi pilihan terbaik untuk belajar online?</h2>
                     <div class="why-grid">
                         @php
                         $feats = [
-                            ['title' => 'Intensive Learning', 'desc' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit ut aliquam.'],
-                            ['title' => 'Growth Mindset',     'desc' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit ut aliquam.'],
-                            ['title' => 'Relevant Skill',     'desc' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit ut aliquam.'],
-                            ['title' => 'Relevant Skill',     'desc' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit ut aliquam.'],
+                            ['title' => 'Materi Berkualitas',   'desc' => 'Setiap kursus dibuat oleh mentor terverifikasi dengan materi video dan PDF yang terstruktur.'],
+                            ['title' => 'Belajar Fleksibel',    'desc' => 'Akses kursus kapan saja dan di mana saja sesuai dengan jadwal belajarmu sendiri.'],
+                            ['title' => 'Kursus Gratis & Berbayar', 'desc' => 'Temukan ribuan kursus gratis maupun berbayar sesuai kebutuhan dan budgetmu.'],
+                            ['title' => 'Evaluasi dengan Quiz', 'desc' => 'Uji pemahamanmu dengan quiz pilihan ganda dan langsung lihat hasilnya setelah selesai.'],
                         ];
                         @endphp
                         @foreach($feats as $f)
@@ -210,50 +230,16 @@
         </div>
     </section>
 
-    <!-- Promo Banners -->  
-    <section class="promo">
-        <div class="section">
-            <div class="promo-grid">
-                <div class="promo-card promo-1">
-                    <div class="promo-text">
-                        <h3>Learning Bootcamp<br>&amp; program</h3>
-                        <a href="#" class="btn-promo">Read More</a>
-                    </div>
-                    <div class="promo-img">
-                        <img src="https://placehold.co/120x120/0f766e/ccfbf1?text=Bootcamp" alt="Bootcamp">
-                    </div>
-                </div>
-                <div class="promo-card promo-2">
-                    <div class="promo-text">
-                        <h3>Professional<br>Development</h3>
-                        <a href="#" class="btn-promo">Read More</a>
-                    </div>
-                    <div class="promo-img">
-                        <img src="https://placehold.co/120x120/4338ca/e0e7ff?text=Professional" alt="Professional">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Partner Logos -->
-    <div class="partners">
-        <div class="partners-inner">
-            @foreach(['◎ Vision', '⬡ Product', '✦ Sitemark', '→ Nextmove', '⬢ Network', '△ Penta'] as $p)
-            <span class="partner-name">{{ $p }}</span>
-            @endforeach
-        </div>
-    </div>
-
     <!-- Testimonials -->
     <section class="testimonials">
         <div class="section">
+            <h1 class="section-title" style="text-align: center;">Apa kata mereka yang sudah belajar di KursusKu?</h2>
             <div class="testi-grid">
                 @php
                 $testis = [
-                    ['name' => 'Benjamin Reed',   'text' => "Upskill's training exceeded expectations. Exceptional instructors, real-world focus. A pivotal step toward career advancement."],
-                    ['name' => 'Olivia Carter',   'text' => "Thrilled with Upskill's program. Invaluable knowledge, seamless delivery. Elevate your skills and future prospects confidently."],
-                    ['name' => 'Daniel Mitchell', 'text' => "Outstanding training by Upskill. Real-world applications, transformative impact. Boosted my career and competency significantly."],
+                    ['name' => 'Andi Pratama',    'text' => "KursusKu benar-benar membantu saya belajar dengan pace sendiri. Materinya terstruktur dan mentor-nya sangat responsif!"],
+                    ['name' => 'Siti Rahayu',     'text' => "Platform yang sangat mudah digunakan. Kursus gratis berkualitas tinggi, plus ada quiz untuk mengukur pemahaman saya."],
+                    ['name' => 'Budi Santoso',    'text' => "Saya berhasil upgrade skill programming saya lewat KursusKu. Video dan PDF-nya sangat membantu proses belajar saya."],
                 ];
                 @endphp
                 @foreach($testis as $t)
@@ -284,11 +270,11 @@
     <section class="cta">
         <div class="cta-inner">
             <div class="cta-text">
-                <h2><mark>Launch Your Career Journey</mark><br>through upskill.</h2>
-                <a href="{{ route('register') }}" class="btn-cta">Register Now</a>
+                <h2><mark>Mulai Perjalanan Belajarmu</mark><br>bersama KursusKu.</h2>
+                <a href="{{ route('register') }}" class="btn-cta">Daftar Sekarang</a>
             </div>
             <div class="cta-img">
-                <img src="https://placehold.co/300x220/1e40af/93c5fd?text=Career+Journey" alt="Career">
+                <img src="{{ asset('images/cta-student.png') }}" alt="Student" style="max-width: 100%; height: auto;">
             </div>
         </div>
     </section>
@@ -299,50 +285,50 @@
             <div class="footer-grid">
                 <!-- Brand -->
                 <div>
-                    <a href="/" class="footer-logo">upskill<span>.</span></a>
+                    <a href="/" class="footer-logo">Kursusku<span>.</span></a>
                     <div class="footer-contact">
                         <div class="contact-row">
                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                             </svg>
-                            0812 9999 9976
+                            0812 3456 7890
                         </div>
                         <div class="contact-row">
                             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
-                            info@upskill.com
+                            info@kursusku.id
                         </div>
                     </div>
                 </div>
                 <!-- Company -->
                 <div class="footer-col">
-                    <h5>Company</h5>
+                    <h5>KursusKu</h5>
                     <ul>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">What We Offer</a></li>
-                        <li><a href="#">Our Course</a></li>
-                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Tentang Kami</a></li>
+                        <li><a href="/courses">Semua Kursus</a></li>
+                        <li><a href="{{ route('register') }}">Daftar Sekarang</a></li>
+                        <li><a href="{{ route('login') }}">Login</a></li>
                     </ul>
                 </div>
                 <!-- Teaching -->
                 <div class="footer-col">
-                    <h5>Teaching</h5>
+                    <h5>Mentor</h5>
                     <ul>
-                        <li><a href="#">Become a Teacher</a></li>
-                        <li><a href="#">Teacher Help Center</a></li>
-                        <li><a href="#">Rules &amp; Requirements</a></li>
-                        <li><a href="#">Leadership</a></li>
+                        <li><a href="{{ route('register') }}">Jadi Mentor</a></li>
+                        <li><a href="#">Panduan Mentor</a></li>
+                        <li><a href="#">Syarat &amp; Ketentuan</a></li>
+                        <li><a href="#">FAQ Mentor</a></li>
                     </ul>
                 </div>
                 <!-- Community -->
                 <div class="footer-col">
-                    <h5>Community</h5>
+                    <h5>Kategori</h5>
                     <ul>
-                        <li><a href="#">Learners</a></li>
-                        <li><a href="#">Partners</a></li>
-                        <li><a href="#">Blog &amp; News</a></li>
-                        <li><a href="#">Team Plans</a></li>
+                        <li><a href="/courses">Development</a></li>
+                        <li><a href="/courses">Design</a></li>
+                        <li><a href="/courses">Business</a></li>
+                        <li><a href="/courses">Marketing</a></li>
                     </ul>
                 </div>
                 <!-- Connect -->
@@ -372,7 +358,7 @@
                     <a href="#">Terms of Use</a>
                     <a href="#">Sitemap</a>
                 </div>
-                <span class="footer-copy">Copyright &copy; 2024 Upskill &middot; Powered by Onecontributor</span>
+                <span class="footer-copy">Copyright &copy; 2025 KursusKu &middot; Platform Kursus Online Indonesia</span>
             </div>
         </div>
     </footer>
