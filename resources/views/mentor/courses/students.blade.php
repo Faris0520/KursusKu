@@ -4,7 +4,7 @@
         <a href="{{ route('mentor.courses.show', $course) }}">{{ $course->title }}</a> / Siswa
     </div>
 
-    <h1 class="panel-page-title" style="margin:8px 0 24px;">Siswa â€” {{ $course->title }}</h1>
+    <h1 class="panel-page-title" style="margin:8px 0 24px;">Siswa - {{ $course->title }}</h1>
 
     <div class="panel-card">
         <table class="panel-table">
