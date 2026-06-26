@@ -1,5 +1,7 @@
 # KursusKu - Platform Kursus Online
 
+https://kursusku.my.id ([List akun](https://github.com/Faris0520/KursusKu/tree/dev-2#akun))
+
 <img width="900" alt="Screenshot" src="https://github.com/user-attachments/assets/0dbfd6c3-bc49-44cf-9883-d2b662c6ba7a">
 <br></br>
 
@@ -318,6 +320,16 @@ Halaman beranda (landing page) menggunakan desain sederhana dengan fokus pada UX
 - Monitoring transaksi
 
 ---
+
+## Akun
+
+| Email | Password | Role |
+|------|--------------|------------|
+| siswa@kursusku.test | `password` | Siswa |
+| siswa2@kursusku.test | `password` | Siswa |
+| siswa3@kursusku.test | `password` | Siswa |
+| mentor@kursusku.test | `password` | Mentor |
+| mentor3@kursusku.test | `password` | Mentor |
 
 ## Lisensi
 
