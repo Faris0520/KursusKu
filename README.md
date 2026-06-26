@@ -1,6 +1,6 @@
 # KursusKu - Platform Kursus Online
 
-https://kursusku.my.id ([List akun](/#akun))
+https://kursusku.my.id ([List akun](https://github.com/Faris0520/KursusKu/tree/dev-2#akun))
 
 <img width="900" alt="Screenshot" src="https://github.com/user-attachments/assets/0dbfd6c3-bc49-44cf-9883-d2b662c6ba7a">
 <br></br>
